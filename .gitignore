@@ -1,0 +1,8 @@
+# Project exclude paths
+/.gradle/
+/junit-4/build/
+/junit-4/build/classes/java/main/
+/junit-4/build/classes/java/test/
+/junit-5/build/
+/junit-5/build/classes/java/main/
+/junit-5/build/classes/java/test/
