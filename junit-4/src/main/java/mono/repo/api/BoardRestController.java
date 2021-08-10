@@ -5,11 +5,14 @@ import mono.repo.entity.Board;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import mono.repo.service.BoardService;
+
+import java.util.List;
 
 /**
  * Description :
@@ -24,23 +27,29 @@ public class BoardRestController {
     
     private final BoardService boardService;
 
-    @GetMapping(value = {"/", "/{id}"})
-    public ResponseEntity loadBoard(Board board) {
-        return ResponseEntity.ok().build();
+    @GetMapping
+    public ResponseEntity<List<Board>> loadBoard() {
+        return ResponseEntity.ok(boardService.findBoard());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Board> loadBoardById(@PathVariable String id) {
+        return ResponseEntity.ok(boardService.findBoardById(Long.valueOf(id)));
     }
 
     @PostMapping
-    public ResponseEntity saveBoard(Board boardDto) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Long> saveBoard(Board board) {
+        return ResponseEntity.ok(boardService.saveBoard(board));
     }
 
     @PutMapping
-    public ResponseEntity updateBoard(Board boardDto) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Long> updateBoard(Board board) {
+        return ResponseEntity.ok(boardService.saveBoard(board));
     }
 
     @DeleteMapping
-    public ResponseEntity deleteBoard(Board boardDto) {
+    public ResponseEntity<Long> deleteBoard(Board board) {
+        boardService.deleteBoard(board);
         return ResponseEntity.ok().build();
     }
 }

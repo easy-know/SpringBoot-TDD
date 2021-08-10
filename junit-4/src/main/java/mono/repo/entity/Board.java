@@ -1,5 +1,7 @@
 package mono.repo.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,7 +21,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "junit4_board")
 @Getter @Setter
-@RequiredArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Board {
     @Id
     @GeneratedValue

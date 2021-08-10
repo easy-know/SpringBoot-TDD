@@ -32,7 +32,12 @@ public class BoardService {
         return boardRepository.findBoardById(id);
     }
 
-    public List<Board> findBoard(Board board) {
-        return boardRepository.findAll(board);
+    public List<Board> findBoard() {
+        return boardRepository.findAll();
+    }
+
+    @Transactional
+    public void deleteBoard(Board board) {
+        boardRepository.delete(board);
     }
 }
