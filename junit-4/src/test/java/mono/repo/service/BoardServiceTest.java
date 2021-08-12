@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.List;
 
 
 /**
@@ -21,8 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author leejinho
  * @version 1.0
  */
-@RunWith(SpringRunner.class)
 @Slf4j
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
 public class BoardServiceTest {
@@ -32,30 +35,32 @@ public class BoardServiceTest {
 
     @BeforeClass
     public static void beforeAll() {
-        System.out.println("===================beforeAll()===================");
+        log.info("===================beforeAll()===================");
     }
 
     @Before
     public void setUp() {
-        System.out.println("===================setUp()===================");
+        log.info("===================setUp()===================");
     }
 
     /**
-     * @Rollback(false): 한 Transaction에서 테스트 진행
+     * @Rollback(false): 한 트랜잭션에서 테스트 진행
      * Transactional: rollback 여부(True/False)
      */
     @Test
     public void saveBoard() {
-        System.out.println("===================saveBoard()===================");
+        // given
         Board board = Board.builder()
                 .author("홍길동")
                 .title("JUnit4")
                 .content("JUnit4를 활용한 TDD")
                 .build();
 
+        // when
         Long savedId = boardService.saveBoard(board);
         Board savedBoard = boardService.findBoardById(savedId);
 
+        // then
         Assertions.assertThat(savedBoard.getId()).isEqualTo(board.getId());
         Assertions.assertThat(savedBoard.getAuthor()).isEqualTo(board.getAuthor());
         Assertions.assertThat(savedBoard.getContent()).isEqualTo(board.getContent());
@@ -64,32 +69,67 @@ public class BoardServiceTest {
 
     @Test
     public void findBoardById() {
+        // given
+        Board board = Board.builder()
+                .title("JUnit4")
+                .author("홍길동")
+                .content("test 입니다.")
+                .build();
+
+        boardService.saveBoard(board);
+
+        // when
         Board savedBoard = boardService.findBoardById(1L);
 
+        // then
         assert (savedBoard.getAuthor().equals("홍길동"));
         assert (savedBoard.getTitle().equals("JUnit4"));
-
-//        Assertions.assertThat(savedBoard.getAuthor()).isEqualTo("홍길동");
-//        Assertions.assertThat(savedBoard.getTitle()).isEqualTo("JUnit4");
     }
 
     @Test
     public void findBoard() {
+        // given
+        Board board = Board.builder()
+                .title("JUnit4")
+                .author("홍길동")
+                .content("test 입니다.")
+                .build();
+
+        // when
+        boardService.saveBoard(board);
+
+        // then
+        Board savedBoard = boardService.findBoardByAuthor("홍길동");
+        Assertions.assertThat(savedBoard.getTitle()).isEqualTo("JUnit4");
     }
 
     @Test
     public void deleteBoard() {
-        Board savedBoard = boardService.findBoardById(1L);
+        // given
+        Board board = Board.builder()
+                .title("JUnit4")
+                .author("홍길동")
+                .content("test 입니다.")
+                .build();
+
+        boardService.saveBoard(board);
+
+        // when
+        Board savedBoard = boardService.findBoardByAuthor("홍길동");
         boardService.deleteBoard(savedBoard);
+
+        // then
+        List<Board> boardList = boardService.findBoard();
+        Assertions.assertThat(boardList.size() == 0);
     }
 
     @After
     public void tearDown() {
-        System.out.println("===================tearDown()===================");
+        log.info("===================tearDown()===================");
     }
 
     @AfterClass
     public static void afterClass() {
-        System.out.println("===================afterClass()===================");
+        log.info("===================afterClass()===================");
     }
 }

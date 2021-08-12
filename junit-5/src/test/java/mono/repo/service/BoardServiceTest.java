@@ -1,17 +1,21 @@
 package mono.repo.service;
 
+import lombok.extern.slf4j.Slf4j;
 import mono.repo.entity.Board;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterAll;
+import mono.repo.repository.BoardRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 /**
  * Description :
@@ -19,45 +23,86 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author leejinho
  * @version 1.0
  */
+@Slf4j
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 class BoardServiceTest {
 
-    @Autowired BoardService boardService;
-    Board board = new Board();
+    @Autowired
+    private BoardService boardService;
 
-    @BeforeAll
-    static void beforeAll() {
-        System.out.println("===================beforeAll()===================");
-    }
+    private Board board;
 
     @BeforeEach
     void setUp() {
-        System.out.println("===================setUp()===================");
-        board.setAuthor("홍길동");
-        board.setTitle("JUnit4");
-        board.setContent("JUnit4를 활용한 TDD");
-    }
-
-    @Test
-    @Transactional
-    void saveBoard() {
-        System.out.println("===================게시글_등록()===================");
-        Long savedId = boardService.saveBoard(board);
-        Board savedBoard = boardService.findBoardById(savedId);
-
-        Assertions.assertThat(savedBoard.getId()).isEqualTo(board.getId());
-        Assertions.assertThat(savedBoard.getAuthor()).isEqualTo(board.getAuthor());
-        Assertions.assertThat(savedBoard.getContent()).isEqualTo(board.getContent());
-        Assertions.assertThat(savedBoard).isEqualTo(board);
+        log.info("============setUp()============");
+        board = Board.builder()
+                .title("JUnit5 Service Test")
+                .author("홍길동")
+                .content("TDD")
+                .build();
     }
 
     @AfterEach
     void tearDown() {
-        System.out.println("===================tearDown()===================");
+        log.info("============tearDown()============");
     }
 
-    @AfterAll
-    static void afterAll() {
-        System.out.println("===================afterClass()===================");
+    @Test
+    void saveBoard() {
+        // when
+        Long savedBoardId = boardService.saveBoard(board);
+
+        // then
+        assert (savedBoardId == 1L);
+    }
+
+    @Test
+    @Transactional
+    void findBoardById() {
+        log.info(board.getAuthor());
+
+        // given
+        Long saveBoardId = boardService.saveBoard(board);
+
+        // when
+        Board savedBoard = boardService.findBoardById(saveBoardId);
+
+        // then
+        assert (saveBoardId.equals(savedBoard.getId()));
+    }
+
+    @Test
+    void findBoardByAuthor() {
+        // given
+        boardService.saveBoard(board);
+
+        // when
+        Board savedBoard = boardService.findBoardByAuthor("홍길동");
+
+        // then
+        assert (savedBoard.getAuthor().equals("홍길동"));
+    }
+
+    @Test
+    void findBoard() {
+        // given
+        boardService.saveBoard(board);
+
+        // when
+        List<Board> boardList = boardService.findBoard();
+
+        // then
+        assert (boardList.size() == 1);
+    }
+
+    @Test
+    void deleteBoard() {
+        // given
+
+
+        // when
+
+        // then
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface BoardRepository extends JpaRepository<Board, Long> {
     Board findBoardById(Long id);
+    Board findByAuthor(String author);
 
     @Override
     <S extends Board> S save(S entity);

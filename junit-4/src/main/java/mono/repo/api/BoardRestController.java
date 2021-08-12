@@ -15,7 +15,7 @@ import mono.repo.service.BoardService;
 import java.util.List;
 
 /**
- * Description :
+ * Description : JUnit4 게시판 Rest API
  *
  * @author leejinho
  * @version 1.0
@@ -32,7 +32,7 @@ public class BoardRestController {
         return ResponseEntity.ok(boardService.findBoard());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Board> loadBoardById(@PathVariable String id) {
         return ResponseEntity.ok(boardService.findBoardById(Long.valueOf(id)));
     }

@@ -5,19 +5,28 @@ import lombok.extern.slf4j.Slf4j;
 import mono.repo.entity.Board;
 import mono.repo.service.BoardService;
 import org.junit.AfterClass;
+
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 /**
  * Description :
@@ -45,10 +54,6 @@ class BoardRestControllerTest {
     @BeforeEach
     public void setUp() {
         log.info("============@BeforeEach============");
-        board = Board.builder()
-                .author("홍길동")
-                .content("JUnit4 API Test")
-                .build();
     }
 
     @AfterEach
@@ -58,12 +63,21 @@ class BoardRestControllerTest {
     }
 
     @Test
-    public void 게시글_불러오기() throws Exception {
+    public void 모든_게시글_불러오기() throws Exception {
         log.info("============loadBoard()============");
-        String content = objectMapper.writeValueAsString(board);
+        MvcResult mvcResult = mockMvc.perform(get("/board")
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is(HttpStatus.OK.value()))
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
 
-//        mockMvc.perform(get("/board"))
-//                .andDo(ResponseEntity.status().)
+        Assertions.assertEquals(MediaType.APPLICATION_JSON.toString(),
+                mvcResult.getResponse().getContentType());
+
+        Assertions.assertEquals(HttpStatus.OK.value(),
+                mvcResult.getResponse().getStatus());
+
     }
 
     /**
@@ -88,6 +102,12 @@ class BoardRestControllerTest {
     @Test
     public void 게시글_저장() throws Exception {
         log.info("============saveBoard()============");
+
+        board = Board.builder()
+                .author("홍길동")
+                .content("JUnit4 API Test")
+                .build();
+
         String content = objectMapper.writeValueAsString(board);
         log.info(content);
 
@@ -101,13 +121,44 @@ class BoardRestControllerTest {
     }
 
     @Test
-    public void 게시글_업데이트() {
-        log.info("============updateBoard()============");
+    public void 게시글_업데이트() throws Exception {
+        // given
+        board = Board.builder()
+                .title("JUnit4 API Test")
+                .author("홍길동")
+                .content("TDD")
+                .build();
 
+        // when & then
+        String content = objectMapper.writeValueAsString(board);
+
+        mockMvc.perform(put("/board")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(result -> {
+                    MockHttpServletResponse response = result.getResponse();
+                    log.info(response.getContentAsString());
+                });
     }
 
     @Test
-    public void 게시글_삭제() {
+    public void 게시글_삭제() throws Exception {
+        // given
+        board = Board.builder()
+                .title("JUnit4 API Test")
+                .author("홍길동")
+                .content("TDD")
+                .build();
+
+        // when & then
+        String content = objectMapper.writeValueAsString(board);
+        mockMvc.perform(delete("/board")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(result -> {
+                    MockHttpServletResponse response = result.getResponse();
+                    log.info(response.getContentAsString());
+                });
         log.info("============deleteBoard()============");
     }
 

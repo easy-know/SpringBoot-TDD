@@ -32,6 +32,10 @@ public class BoardService {
         return boardRepository.findBoardById(id);
     }
 
+    public Board findBoardByAuthor(String author) {
+        return boardRepository.findByAuthor(author);
+    }
+
     public List<Board> findBoard() {
         return boardRepository.findAll();
     }

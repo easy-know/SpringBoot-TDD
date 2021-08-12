@@ -60,6 +60,19 @@ public class BoardRepositoryTest {
         assert (board1.getAuthor()).equals(savedBoard.getAuthor());
     }
 
+    /**
+     * Save()
+     * - 저장 후 생성 된 ID를 반환합니다. 그것의 Serializable반환 형식.
+     * - 트랜잭션 외부의 DB에 변경 사항을 저장하십시오.
+     * - 생성 된 ID를 유지중인 엔티티에 할당
+     * - 분리 된 객체에 대한 Session.save ()는 테이블에 새로운 행을 만듭니다.
+     *
+     * Persist()
+     * - 저장 후 생성 된 ID를 반환하지 않습니다. void 리턴 타입입니다.
+     * - 트랜잭션 외부의 DB에 대한 변경 사항을 저장하지 않습니다.
+     * - generated id지속중인 엔터티 에을 할당합니다
+     * - session.persist()분리 된 객체는 PersistentObjectException허용되지 않으므로 throw 됩니다.
+     */
     @Test
     public void 저장하기() {
         // given
