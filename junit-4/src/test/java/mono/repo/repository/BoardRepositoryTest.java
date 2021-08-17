@@ -3,13 +3,17 @@ package mono.repo.repository;
 import lombok.extern.slf4j.Slf4j;
 import mono.repo.entity.Board;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,9 +25,10 @@ import java.util.List;
  * @author leejinho
  * @version 1.0
  */
-@RunWith(SpringRunner.class)
-@DataJpaTest
 @Slf4j
+@DataJpaTest
+@Transactional
+@RunWith(SpringRunner.class)
 public class BoardRepositoryTest {
 
     @Autowired
@@ -31,6 +36,11 @@ public class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @BeforeClass
+    public static void beforeClass() {
+        log.info("=========@BeforeClass=========");
+    }
 
     @Before
     public void setUp() {
@@ -42,8 +52,14 @@ public class BoardRepositoryTest {
         log.info("=========tearDown()=========");
     }
 
+    @AfterClass
+    public static void afterClass() {
+        log.info("=========@AfterClass=========");
+    }
+
+    @DisplayName("아이디로 게시글 찾기")
     @Test
-    public void 아이디로_검색하기() {
+    public void findBoardById() {
         // given
         Board board1 = Board.builder()
                 .title("(1) - JUnit4 @DataJpaTest")
@@ -70,11 +86,12 @@ public class BoardRepositoryTest {
      * Persist()
      * - 저장 후 생성 된 ID를 반환하지 않습니다. void 리턴 타입입니다.
      * - 트랜잭션 외부의 DB에 대한 변경 사항을 저장하지 않습니다.
-     * - generated id지속중인 엔터티 에을 할당합니다
+     * - generated id 지속중인 엔터티 에을 할당합니다
      * - session.persist()분리 된 객체는 PersistentObjectException허용되지 않으므로 throw 됩니다.
      */
+    @DisplayName("게시글 저장하기")
     @Test
-    public void 저장하기() {
+    public void save() {
         // given
         Board board1 = Board.builder()
                 .title("(1) - JUnit4 @DataJpaTest")

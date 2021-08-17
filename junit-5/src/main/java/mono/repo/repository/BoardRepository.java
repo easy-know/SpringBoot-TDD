@@ -4,7 +4,7 @@ import mono.repo.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Description :
+ * Description : Board Repository
  *
  * @author leejinho
  * @version 1.0

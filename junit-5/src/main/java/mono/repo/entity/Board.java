@@ -3,6 +3,7 @@ package mono.repo.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -13,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Description :
+ * Description : Board Entity
  *
  * @author leejinho
  * @version 1.0
@@ -23,6 +24,7 @@ import javax.persistence.Table;
 @Getter @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Board {
     @Id
     @GeneratedValue

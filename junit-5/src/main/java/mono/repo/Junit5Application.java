@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Description :
+ * Description : JUnit5 demo Application
  *
  * @author leejinho
  * @version 1.0

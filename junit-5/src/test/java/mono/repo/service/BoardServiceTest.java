@@ -2,17 +2,14 @@ package mono.repo.service;
 
 import lombok.extern.slf4j.Slf4j;
 import mono.repo.entity.Board;
-import mono.repo.repository.BoardRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,8 +26,7 @@ import java.util.List;
 class BoardServiceTest {
 
     @Autowired
-    private BoardService boardService;
-
+    private BoardServiceImpl boardService;
     private Board board;
 
     @BeforeEach
@@ -60,8 +56,6 @@ class BoardServiceTest {
     @Test
     @Transactional
     void findBoardById() {
-        log.info(board.getAuthor());
-
         // given
         Long saveBoardId = boardService.saveBoard(board);
 
@@ -99,10 +93,13 @@ class BoardServiceTest {
     @Test
     void deleteBoard() {
         // given
-
+        boardService.saveBoard(board);
 
         // when
+        boardService.deleteBoard(board);
 
         // then
+        List<Board> boardList = boardService.findBoard();
+        Assertions.assertThat(boardList.size() == 0);
     }
 }

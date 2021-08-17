@@ -2,7 +2,7 @@ package mono.repo.api;
 
 import lombok.RequiredArgsConstructor;
 import mono.repo.entity.Board;
-import mono.repo.service.BoardService;
+import mono.repo.service.BoardServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Description :
+ * Description : Rest Controller
  *
  * @author leejinho
  * @version 1.0
@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardRestController {
 
-    private final BoardService boardService;
+    private final BoardServiceImpl boardService;
 
     @GetMapping
     public ResponseEntity<List<Board>> loadBoard() {
