@@ -2,104 +2,71 @@ package mono.repo.service;
 
 import lombok.extern.slf4j.Slf4j;
 import mono.repo.entity.Board;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
+import mono.repo.repository.BoardRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Description :
+ * Description : Board Service(Interface) Test
  *
  * @author leejinho
  * @version 1.0
  */
 @Slf4j
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
 class BoardServiceTest {
 
-    @Autowired
-    private BoardServiceImpl boardService;
     private Board board;
+
+    @Mock
+    private BoardRepository boardRepository;
+
+    @Mock
+    private BoardService boardService;
 
     @BeforeEach
     void setUp() {
-        log.info("============setUp()============");
-        board = Board.builder()
-                .title("JUnit5 Service Test")
+    }
+
+    @Test
+    void increaseViews() {
+        // given
+        Board board = Board.builder()
+                .title("JUnit5")
                 .author("홍길동")
                 .content("TDD")
+                .views("0")
                 .build();
-    }
 
-    @AfterEach
-    void tearDown() {
-        log.info("============tearDown()============");
-    }
+        BDDMockito.given(boardRepository.save(board))
+                .willReturn(
+                        Board.builder()
+                                .id(1L)
+                                .title("JUnit5")
+                                .author("홍길동")
+                                .content("TDD")
+                                .views("0")
+                                .build()
+                );
 
-    @Test
-    void saveBoard() {
-        // when
-        Long savedBoardId = boardService.saveBoard(board);
-
-        // then
-        assert (savedBoardId == 1L);
-    }
-
-    @Test
-    @Transactional
-    void findBoardById() {
-        // given
-        Long saveBoardId = boardService.saveBoard(board);
+        Board savedBoard = boardRepository.save(board);
+        log.info(savedBoard.getId().toString());
 
         // when
-        Board savedBoard = boardService.findBoardById(saveBoardId);
+        Optional<Board> findBoard = boardRepository.findById(savedBoard.getId());
+//        String findBoardViews = findBoard.get().getViews();
+//        findBoardViews = findBoardViews + 1;
 
         // then
-        assert (saveBoardId.equals(savedBoard.getId()));
-    }
-
-    @Test
-    void findBoardByAuthor() {
-        // given
-        boardService.saveBoard(board);
-
-        // when
-        Board savedBoard = boardService.findBoardByAuthor("홍길동");
-
-        // then
-        assert (savedBoard.getAuthor().equals("홍길동"));
-    }
-
-    @Test
-    void findBoard() {
-        // given
-        boardService.saveBoard(board);
-
-        // when
-        List<Board> boardList = boardService.findBoard();
-
-        // then
-        assert (boardList.size() == 1);
-    }
-
-    @Test
-    void deleteBoard() {
-        // given
-        boardService.saveBoard(board);
-
-        // when
-        boardService.deleteBoard(board);
-
-        // then
-        List<Board> boardList = boardService.findBoard();
-        Assertions.assertThat(boardList.size() == 0);
+        assertEquals(1L, savedBoard.getId());
     }
 }

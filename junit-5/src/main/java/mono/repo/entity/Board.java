@@ -38,4 +38,6 @@ public class Board {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
+
+    private String views;
 }

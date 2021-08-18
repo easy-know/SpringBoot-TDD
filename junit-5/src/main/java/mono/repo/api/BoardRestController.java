@@ -2,7 +2,7 @@ package mono.repo.api;
 
 import lombok.RequiredArgsConstructor;
 import mono.repo.entity.Board;
-import mono.repo.service.BoardServiceImpl;
+import mono.repo.service.BoardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,31 +25,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardRestController {
 
-    private final BoardServiceImpl boardService;
+    private final BoardService boardService;
 
     @GetMapping
     public ResponseEntity<List<Board>> loadBoard() {
-        return ResponseEntity.ok(boardService.findBoard());
+        return ResponseEntity.ok(boardService.findAll());
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Board> loadBoardById(@PathVariable String id) {
-        return ResponseEntity.ok(boardService.findBoardById(Long.valueOf(id)));
+        return ResponseEntity.ok(boardService.find(Long.valueOf(id)));
     }
 
     @PostMapping
     public ResponseEntity<Long> saveBoard(Board board) {
-        return ResponseEntity.ok(boardService.saveBoard(board));
+        return ResponseEntity.ok(boardService.save(board));
     }
 
     @PutMapping
-    public ResponseEntity<Long> updateBoard(Board board) {
-        return ResponseEntity.ok(boardService.saveBoard(board));
+    public ResponseEntity<Board> updateBoard(Board board) {
+        return ResponseEntity.ok(boardService.update(board));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Long> deleteBoard(Board board) {
-        boardService.deleteBoard(board);
+    @GetMapping("{id}")
+    public ResponseEntity<Long> deleteBoard(@PathVariable String id) {
+        boardService.delete(Long.valueOf(id));
         return ResponseEntity.ok().build();
     }
 }

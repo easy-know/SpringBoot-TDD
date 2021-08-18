@@ -1,6 +1,7 @@
 package mono.repo.service;
 
 import mono.repo.entity.Board;
+import org.springframework.stereotype.Service;
 
 /**
  * Description : Board Service
@@ -8,7 +9,11 @@ import mono.repo.entity.Board;
  * @author leejinho
  * @version 1.0
  */
+@Service
 public interface BoardService extends CRUDService<Board, Long> {
-    public Integer findLikes(Long id);
-    public Integer findViews(Long id);
+    /**
+     * 조회수 조회 메서드
+     * @param id: pk
+     */
+    String increaseViews(Long id);
 }
