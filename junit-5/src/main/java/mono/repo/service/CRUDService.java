@@ -10,7 +10,6 @@ import java.util.List;
  * @author leejinho
  * @version 1.0
  */
-@Service
 public interface CRUDService <Entity, Long> {
     /**
      * Entity 리스트 반환 메서드

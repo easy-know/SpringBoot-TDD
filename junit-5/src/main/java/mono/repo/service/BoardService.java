@@ -9,11 +9,10 @@ import org.springframework.stereotype.Service;
  * @author leejinho
  * @version 1.0
  */
-@Service
 public interface BoardService extends CRUDService<Board, Long> {
     /**
      * 조회수 조회 메서드
      * @param id: pk
      */
-    String increaseViews(Long id);
+    Board increaseViews(Long id);
 }
