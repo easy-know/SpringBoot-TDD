@@ -1,5 +1,6 @@
 package mono.repo.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import mono.repo.entity.Board;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -79,8 +81,8 @@ class BoardRestControllerTest {
                 .title("JUnit5")
                 .content("TDD")
                 .build();
-        ObjectMapper objectMapper = new ObjectMapper();
 
+        ObjectMapper objectMapper = new ObjectMapper();
         String content = objectMapper.writeValueAsString(board);
 
         mvc.perform(MockMvcRequestBuilders.post("/board")
@@ -89,14 +91,38 @@ class BoardRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
         // 테스트 안에서 특정 메소드를 호출했는지에 대해서 검증
-        Mockito.verify(mvc, Mockito.never()).save(board);
+        Mockito.verify(boardService).save(Mockito.any(Board.class));
     }
 
     @Test
-    void updateBoard() {
+    @DisplayName("게시글 수정")
+    void updateBoard() throws Exception {
+        Board board = Board.builder()
+                .author("홍길동")
+                .views("0")
+                .title("JUnit5")
+                .content("TDD")
+                .build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String content = objectMapper.writeValueAsString(board);
+
+        mvc.perform(MockMvcRequestBuilders.put("/board")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        Mockito.verify(boardService).update(Mockito.any(Board.class));
+
     }
 
     @Test
-    void deleteBoard() {
+    @DisplayName("게시글 삭제")
+    void deleteBoard() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete("/board/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        Mockito.verify(boardService).delete(1L);
     }
 }
