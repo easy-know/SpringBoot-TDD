@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mono.repo.entity.Board;
 import mono.repo.repository.BoardRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,8 +15,10 @@ import java.util.List;
  * @version 1.0
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
+
     private final BoardRepository boardRepository;
 
     @Override
@@ -23,17 +26,19 @@ public class BoardServiceImpl implements BoardService {
 
         Board findBoard = boardRepository.findById(id).get();
         Integer views = Integer.valueOf(findBoard.getViews());
-        findBoard.setViews(String.valueOf(++views));
+        findBoard.setViews(++views);
 
         return findBoard;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Board> findAll() {
         return boardRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Board find(Long id) {
         return boardRepository.findById(id).get();
     }
@@ -41,12 +46,13 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public String delete(Long id) {
         boardRepository.deleteById(id);
-        return id.toString();
+        return String.valueOf(id);
     }
 
     @Override
     public Long save(Board board) {
-        return boardRepository.save(board).getId();
+        Board save = boardRepository.save(board);
+        return save.getId();
     }
 
     @Override

@@ -103,7 +103,6 @@ class BoardRestControllerTest {
                 .title("JUnit5")
                 .content("TDD")
                 .build();
-
         ObjectMapper objectMapper = new ObjectMapper();
         String content = objectMapper.writeValueAsString(board);
 

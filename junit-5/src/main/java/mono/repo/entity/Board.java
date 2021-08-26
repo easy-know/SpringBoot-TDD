@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -43,5 +44,6 @@ public class Board {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    private String views;
+    @ColumnDefault("0")
+    private Integer views;
 }
