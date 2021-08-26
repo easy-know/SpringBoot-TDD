@@ -7,8 +7,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -25,22 +28,20 @@ import static org.junit.jupiter.api.Assertions.*;
  * @version 1.0
  */
 @Slf4j
-@DataJpaTest
-@Transactional
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class BoardServiceImplTest {
 
     @Mock
     private BoardRepository boardRepository;
-
-    @InjectMocks
     private BoardServiceImpl boardServiceImpl;
-
     private Board board;
 
     @BeforeEach
     void setUp() {
         log.info("BeforeEach()");
+
+        boardServiceImpl = new BoardServiceImpl(boardRepository);
+
         board = Board.builder()
                 .author("홍길동")
                 .title("JUnit5 Service Test")
@@ -55,38 +56,37 @@ class BoardServiceImplTest {
 
     @Test
     void increaseViews() {
-        // given
-        Long savedId = boardServiceImpl.save(board);
-        Board findBoard = boardServiceImpl.find(savedId);
+        log.info("increaseViews()");
 
-        // when
-        Integer asIsView = findBoard.getViews();
-        asIsView += 1;
-
-        // then
-        assertEquals(asIsView, 2);
     }
 
     @Test
     void findAll() {
+        log.info("findAll()");
+
     }
 
     @Test
     void find() {
+        log.info("find()");
+
     }
 
     @Test
     void delete() {
+        log.info("delete()");
+
     }
 
     @Test
     void save() {
-        Long save = boardServiceImpl.save(board);
+        log.info("save()");
 
-        assertEquals(save, 1L);
     }
 
     @Test
     void update() {
+        log.info("update()");
+
     }
 }
